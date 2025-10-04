@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Panel de gráficos - CONEVAL (2008–2018)</title>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      margin: 20px;
+      background: #121212;
+      color: #e0e0e0;
+    }
+
+    h1 {
+      font-size: 22px;
+      color: #ffffff;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .card {
+      background: #1e1e1e;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.01);
+    }
+
+    .chart-title {
+      font-weight: 600;
+      color: #bb86fc;
+      margin-bottom: 8px;
+    }
+
+    .note {
+      text-align: center;
+      font-size: 13px;
+      color: #a0a0a0;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Panel de Gráficos: Evolución de la Pobreza en México (2008–2018)</h1>
+  <p class="note">Fuente: CONEVAL, "Medición de la pobreza, serie 2008–2018".</p>
+
+  <div class="grid">
+    <div class="card full">
+      <div class="chart-title">1️⃣ Porcentaje de población en situación de pobreza (2008–2018)</div>
+      <div id="chart_line_pobreza" style="height:320px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="chart-title">2️⃣ Personas en pobreza extrema (millones)</div>
+      <div id="chart_col_extrema" style="height:300px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="chart-title">3️⃣ Distribución porcentual por categoría (2008–2018)</div>
+      <div id="chart_stacked" style="height:300px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="chart-title">4️⃣ Distribución 2018 (pastel)</div>
+      <div id="chart_pie_2018" style="height:300px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="chart-title">5️⃣ Retos sociales 2018</div>
+      <div id="chart_bar_retos" style="height:300px;"></div>
+    </div>
+  </div>
+
+  <script>
+    google.charts.load('current', { packages: ['corechart', 'bar'] });
+    google.charts.setOnLoadCallback(drawCharts);
+
+    function drawCharts() {
+      // Colores personalizados
+      const colores = ['#03DAC6', '#FFB300', '#F06292', '#64B5F6', '#AED581'];
+
+      // 1️⃣ Línea — % pobreza
+      var data1 = google.visualization.arrayToDataTable([
+        ['Año', 'Porcentaje (%)'],
+        ['2008', 44.4],
+        ['2010', 46.1],
+        ['2012', 45.5],
+        ['2014', 46.2],
+        ['2016', 43.6],
+        ['2018', 41.9]
+      ]);
+      new google.visualization.LineChart(document.getElementById('chart_line_pobreza'))
+        .draw(data1, {
+          height: 320,
+          colors: [colores[3]],
+          legend: { position: 'bottom', textStyle: { color: '#fff' } },
+          backgroundColor: '#1e1e1e',
+          hAxis: { title: 'Año', textStyle: { color: '#ccc' }, titleTextStyle: { color: '#ccc' } },
+          vAxis: { title: '% de la población', textStyle: { color: '#ccc' }, titleTextStyle: { color: '#ccc' } }
+        });
+
+      // 2️⃣ Columnas — pobreza extrema
+      var data2 = google.visualization.arrayToDataTable([
+        ['Año', 'Millones de personas'],
+        ['2008', 12.33],
+        ['2010', 12.96],
+        ['2012', 11.53],
+        ['2014', 11.44],
+        ['2016', 9.38],
+        ['2018', 9.31]
+      ]);
+      new google.visualization.ColumnChart(document.getElementById('chart_col_extrema'))
+        .draw(data2, {
+          height: 300,
+          colors: [colores[1]],
+          legend: { position: 'none' },
+          backgroundColor: '#1e1e1e',
+          hAxis: { textStyle: { color: '#ccc' } },
+          vAxis: { title: 'Millones de personas', textStyle: { color: '#ccc' }, titleTextStyle: { color: '#ccc' } }
+        });
+
+      // 3️⃣ Columnas apiladas — distribución
+      var data3 = google.visualization.arrayToDataTable([
+        ['Año', 'Pobreza moderada', 'Pobreza extrema', 'Vulnerable (carencias)', 'Vulnerable (ingresos)', 'No pobre y no vulnerable'],
+        ['2008', 33.3, 11.0, 32.3, 4.7, 18.7],
+        ['2010', 34.8, 11.3, 28.1, 5.9, 19.9],
+        ['2012', 35.7, 9.8, 28.6, 6.2, 19.8],
+        ['2014', 36.6, 9.5, 26.3, 7.1, 20.5],
+        ['2016', 35.9, 7.6, 26.8, 7.0, 22.6],
+        ['2018', 34.5, 7.4, 29.3, 6.9, 21.9]
+      ]);
+      new google.visualization.ColumnChart(document.getElementById('chart_stacked'))
+        .draw(data3, {
+          isStacked: true,
+          height: 300,
+          colors: colores,
+          backgroundColor: '#1e1e1e',
+          legend: { position: 'bottom', textStyle: { color: '#fff' } },
+          hAxis: { textStyle: { color: '#ccc' } },
+          vAxis: { textStyle: { color: '#ccc' }, titleTextStyle: { color: '#ccc' } }
+        });
+
+      // 4️⃣ Pastel — distribución 2018
+      var data4 = google.visualization.arrayToDataTable([
+        ['Categoría', '%'],
+        ['Pobreza moderada', 34.5],
+        ['Pobreza extrema', 7.4],
+        ['Vulnerable (carencias)', 29.3],
+        ['Vulnerable (ingresos)', 6.9],
+        ['No pobre y no vulnerable', 21.9]
+      ]);
+      new google.visualization.PieChart(document.getElementById('chart_pie_2018'))
+        .draw(data4, {
+          height: 300,
+          pieHole: 0.35,
+          colors: colores,
+          backgroundColor: '#1e1e1e',
+          legend: { position: 'right', textStyle: { color: '#fff' } }
+        });
+
+      // 5️⃣ Barras — retos sociales
+      var data5 = google.visualization.arrayToDataTable([
+        ['Concepto', 'Millones'],
+        ['Carecen de seguridad social', 71.7],
+        ['Ingreso insuficiente', 61.1],
+        ['Población en pobreza', 52.4],
+        ['Pobreza extrema', 9.3]
+      ]);
+      new google.visualization.BarChart(document.getElementById('chart_bar_retos'))
+        .draw(data5, {
+          height: 300,
+          colors: [colores[0]],
+          backgroundColor: '#1e1e1e',
+          legend: { position: 'none' },
+          hAxis: { textStyle: { color: '#ccc' } },
+          vAxis: { textStyle: { color: '#ccc' } }
+        });
+    }
+  </script>
+</body>
+
+</html>
